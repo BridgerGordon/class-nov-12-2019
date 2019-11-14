@@ -7,9 +7,11 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
-library(tidyverse)
 library(googlesheets4)
+library(tidyverse)
 
+sheets_deauth()
+x <- read_sheet("13NhlT-Oik5P4NOKRWwrJ7xZQlddFNk81HHEw9wkWglM")
 ```
 
 ## National Election Survey Data
@@ -17,17 +19,19 @@ library(googlesheets4)
 Relationship between partisanship and voting Democratic using linear model
 
 ```{r}
+x %>% 
+  ggplot(aes(partisanship, dvote)) +
+  geom_jitter() + 
+  geom_smooth(method = "lm")
+```
+```{r}
+lm(data = x, dvote ~ partisanship)
+```
 
-sheets_deauth()
-election <- read_sheet("13NhlT-Oik5P4NOKRWwrJ7xZQlddFNk81HHEw9wkWglM")
-election
-
-ggplot(election, aes(x=partisanship, y = dvote)) +
-  geom_jitter(height = 0.1) + 
-  geom_smooth(method = "lm", se = FALSE)
-
-model <- lm(data = election, dvote ~ partisanship)
-
-
+```{r}
+x %>% 
+  ggplot(aes(partisanship, dvote)) +
+  geom_jitter(height = 0.2) + 
+  geom_smooth(method = "glm", method.args = list(family = "binomial"), se = FALSE)
 ```
 
